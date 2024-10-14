@@ -4,6 +4,7 @@ import com.ichtus.events_module.entity.ConferenceEvent;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -13,9 +14,7 @@ public class InMemoryEventRepository implements EventRepository {
 
     @Override
     public void save(ConferenceEvent event) {
-        if (!conferenceEventList.containsKey(event.getEventId())) {
-            conferenceEventList.put(event.getEventId(), event);
-        }
+        conferenceEventList.put(event.getEventId(), event);
     }
 
     @Override
@@ -33,5 +32,14 @@ public class InMemoryEventRepository implements EventRepository {
             result = result.concat(item.getValue().getTitle() + " from " + item.getValue().getStartDateTime() + " to " + item.getValue().getEndDateTime() + "\n");
         }
         return result;
+    }
+
+    public Long getMaxId() {
+        return conferenceEventList.keySet().stream().max(Long::compareTo).orElse(0L);
+    }
+
+    @Override
+    public List<ConferenceEvent> getAllEvents() {
+        return conferenceEventList.values().stream().toList();
     }
 }
